@@ -28,7 +28,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <>
-      <div className="px-5 md:px-8 pt-12 md:pt-16 pb-8 md:pb-10 text-center">
+      <div className="px-5 md:px-8 pt-6 md:pt-8 pb-8 md:pb-10 text-center">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 text-xs tracking-[0.12em] uppercase text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors mb-4"
@@ -39,9 +39,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-light tracking-wide">
           {category.name}
         </h1>
-        <p className="mt-2 text-sm text-neutral-400 dark:text-neutral-500">
-          {images.length} {images.length === 1 ? "photograph" : "photographs"}
-        </p>
       </div>
 
       {images.length > 0 ? (
