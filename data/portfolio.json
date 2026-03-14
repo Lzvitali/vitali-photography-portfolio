@@ -1,0 +1,121 @@
+{
+  "categories": [
+    {
+      "id": "cat-events",
+      "name": "Events",
+      "slug": "events",
+      "order": 0,
+      "coverImageId": "img-fb40d2b0",
+      "coverCrop": { "x": 0, "y": 0, "width": 100, "height": 100 },
+      "cardLayout": "portrait"
+    },
+    {
+      "id": "cat-views",
+      "name": "Views & Nature",
+      "slug": "views-nature",
+      "order": 1,
+      "coverImageId": "img-7a8d9356",
+      "coverCrop": { "x": 0, "y": 0, "width": 100, "height": 100 },
+      "cardLayout": "landscape"
+    },
+    {
+      "id": "cat-animals",
+      "name": "Animals",
+      "slug": "animals",
+      "order": 2,
+      "coverImageId": "img-393cc684",
+      "coverCrop": { "x": 0, "y": 0, "width": 100, "height": 100 },
+      "cardLayout": "square"
+    },
+    {
+      "id": "cat-couples",
+      "name": "Couples",
+      "slug": "couples",
+      "order": 3,
+      "coverImageId": "img-0d3fc84f",
+      "coverCrop": { "x": 0, "y": 0, "width": 100, "height": 100 },
+      "cardLayout": "portrait"
+    },
+    {
+      "id": "cat-street",
+      "name": "Street Photography",
+      "slug": "street-photography",
+      "order": 4,
+      "coverImageId": "img-7d29b02d",
+      "coverCrop": { "x": 0, "y": 0, "width": 100, "height": 100 },
+      "cardLayout": "wide"
+    }
+  ],
+  "images": [
+    {
+      "id": "img-fb40d2b0",
+      "url": "https://res.cloudinary.com/drtzu6ywv/image/upload/v1773498723/portfolio/l3nlyhcw5ecvl41f1v21.jpg",
+      "public_id": "portfolio/l3nlyhcw5ecvl41f1v21",
+      "title": "",
+      "categoryId": "cat-events",
+      "width": 4672,
+      "height": 6229,
+      "order": 0,
+      "focalPoint": {
+        "x": 50,
+        "y": 50
+      }
+    },
+    {
+      "id": "img-7a8d9356",
+      "url": "https://res.cloudinary.com/drtzu6ywv/image/upload/v1773498728/portfolio/ceofnccx0ebmvdmyz6fx.jpg",
+      "public_id": "portfolio/ceofnccx0ebmvdmyz6fx",
+      "title": "",
+      "categoryId": "cat-views",
+      "width": 4672,
+      "height": 7008,
+      "order": 0,
+      "focalPoint": {
+        "x": 50,
+        "y": 50
+      }
+    },
+    {
+      "id": "img-393cc684",
+      "url": "https://res.cloudinary.com/drtzu6ywv/image/upload/v1773498732/portfolio/dcc5gxz46abw93zmoiht.jpg",
+      "public_id": "portfolio/dcc5gxz46abw93zmoiht",
+      "title": "",
+      "categoryId": "cat-animals",
+      "width": 4328,
+      "height": 6493,
+      "order": 0,
+      "focalPoint": {
+        "x": 50,
+        "y": 50
+      }
+    },
+    {
+      "id": "img-0d3fc84f",
+      "url": "https://res.cloudinary.com/drtzu6ywv/image/upload/v1773498739/portfolio/u6ildpdjb3bxk68mqjgj.jpg",
+      "public_id": "portfolio/u6ildpdjb3bxk68mqjgj",
+      "title": "",
+      "categoryId": "cat-couples",
+      "width": 4417,
+      "height": 6626,
+      "order": 0,
+      "focalPoint": {
+        "x": 50,
+        "y": 50
+      }
+    },
+    {
+      "id": "img-7d29b02d",
+      "url": "https://res.cloudinary.com/drtzu6ywv/image/upload/v1773498745/portfolio/vhyjechq1x8mywe9suwo.jpg",
+      "public_id": "portfolio/vhyjechq1x8mywe9suwo",
+      "title": "",
+      "categoryId": "cat-street",
+      "width": 3000,
+      "height": 2460,
+      "order": 0,
+      "focalPoint": {
+        "x": 50,
+        "y": 50
+      }
+    }
+  ]
+}
