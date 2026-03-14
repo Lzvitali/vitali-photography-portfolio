@@ -4,6 +4,7 @@ import ThemeProvider from "@/components/public/ThemeProvider";
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import AdminFloatingButton from "@/components/public/AdminFloatingButton";
+import ImageGuard from "@/components/public/ImageGuard";
 import { getPortfolioData, getSiteData } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -43,6 +44,7 @@ export default function RootLayout({
           <main className="flex-1 pt-16">{children}</main>
           <Footer name={site.name} contact={site.contact} />
           <AdminFloatingButton />
+          <ImageGuard />
         </ThemeProvider>
       </body>
     </html>

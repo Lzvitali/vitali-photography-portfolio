@@ -21,6 +21,7 @@ function computeRows(
 ): Row[] {
   if (containerWidth <= 0 || images.length === 0) return [];
 
+  const maxHeight = targetHeight * 1.35;
   const rows: Row[] = [];
   let currentRow: PortfolioImage[] = [];
   let currentIndices: number[] = [];
@@ -37,7 +38,7 @@ function computeRows(
     const rowWidth = ratioSum * targetHeight + gaps;
 
     if (rowWidth >= containerWidth && currentRow.length > 0) {
-      const actualHeight = (containerWidth - gaps) / ratioSum;
+      const actualHeight = Math.min((containerWidth - gaps) / ratioSum, maxHeight);
       rows.push({
         images: [...currentRow],
         indices: [...currentIndices],

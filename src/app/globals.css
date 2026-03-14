@@ -72,7 +72,13 @@ body {
 .stagger-children > *:nth-child(7) { animation-delay: 0.48s; }
 .stagger-children > *:nth-child(8) { animation-delay: 0.56s; }
 
-/* Image protection overlay */
+/* Image protection — block casual downloading */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+}
+
 .image-protect {
   -webkit-user-select: none;
   user-select: none;
