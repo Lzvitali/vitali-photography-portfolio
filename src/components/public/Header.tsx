@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, Aperture } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import type { Category } from "@/lib/types";
@@ -15,6 +16,21 @@ export default function Header({ siteName, categories }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  function scrollToHash(hash: string) {
+    setMobileOpen(false);
+    setDropdownOpen(false);
+    if (pathname === "/") {
+      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      router.push(`/#${hash}`);
+      setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  }
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -84,12 +100,12 @@ export default function Header({ siteName, categories }: HeaderProps) {
               )}
             </div>
 
-            <Link href="/#about" className={navLinkClass}>
+            <button onClick={() => scrollToHash("about")} className={navLinkClass}>
               About
-            </Link>
-            <Link href="/#contact" className={navLinkClass}>
+            </button>
+            <button onClick={() => scrollToHash("contact")} className={navLinkClass}>
               Contact
-            </Link>
+            </button>
             <ThemeToggle />
           </nav>
 
@@ -133,20 +149,18 @@ export default function Header({ siteName, categories }: HeaderProps) {
 
           <div className="w-12 border-t border-neutral-200 dark:border-neutral-800 my-2" />
 
-          <Link
-            href="/#about"
-            onClick={() => setMobileOpen(false)}
+          <button
+            onClick={() => scrollToHash("about")}
             className="font-display text-2xl font-light tracking-wide"
           >
             About
-          </Link>
-          <Link
-            href="/#contact"
-            onClick={() => setMobileOpen(false)}
+          </button>
+          <button
+            onClick={() => scrollToHash("contact")}
             className="font-display text-2xl font-light tracking-wide"
           >
             Contact
-          </Link>
+          </button>
         </div>
       )}
     </>
