@@ -43,8 +43,8 @@ export default function CategoryCard({
     : coverImage
       ? thumbnailUrl(coverImage.url)
       : "";
-  const focalX = coverImage?.focalPoint?.x ?? 50;
-  const focalY = coverImage?.focalPoint?.y ?? 50;
+  const focalX = category.coverFocalPoint?.x ?? coverImage?.focalPoint?.x ?? 50;
+  const focalY = category.coverFocalPoint?.y ?? coverImage?.focalPoint?.y ?? 50;
 
   return (
     <Link

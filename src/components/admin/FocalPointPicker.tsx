@@ -33,7 +33,7 @@ export default function FocalPointPicker({
   );
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 animate-fadeIn">
+    <div className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 animate-fadeIn">
       <div className="bg-white dark:bg-neutral-900 rounded-lg overflow-hidden max-w-3xl w-full shadow-xl animate-scaleIn">
         <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
           <h3 className="text-sm font-medium">

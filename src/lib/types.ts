@@ -39,6 +39,7 @@ export interface Category {
   order: number;
   coverImageId: string | null;
   coverUrl: string | null;
+  coverFocalPoint: FocalPoint;
   coverCrop: CoverCrop;
   cardLayout: CardLayout;
 }

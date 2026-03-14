@@ -13,9 +13,10 @@ import {
   Loader2,
   X,
 } from "lucide-react";
-import type { PortfolioData, Category, SiteData, CardLayout } from "@/lib/types";
+import type { PortfolioData, Category, SiteData, CardLayout, FocalPoint } from "@/lib/types";
 import { CARD_LAYOUT_OPTIONS } from "@/lib/types";
 import { slugify } from "@/lib/utils";
+import FocalPointPicker from "@/components/admin/FocalPointPicker";
 
 export default function AdminDashboard() {
   const [portfolio, setPortfolio] = useState<PortfolioData | null>(null);
@@ -27,6 +28,7 @@ export default function AdminDashboard() {
   const [message, setMessage] = useState("");
   const [coverUploading, setCoverUploading] = useState(false);
   const [coverUrlInput, setCoverUrlInput] = useState("");
+  const [showCoverFocalPicker, setShowCoverFocalPicker] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -329,6 +331,25 @@ export default function AdminDashboard() {
         </div>
       )}
 
+      {/* Cover Focal Point Picker */}
+      {showCoverFocalPicker && editingCat && (() => {
+        const coverImg = editingCat.coverUrl
+          || portfolio.images.find((img) => img.id === editingCat.coverImageId)?.url
+          || "";
+        if (!coverImg) return null;
+        return (
+          <FocalPointPicker
+            imageUrl={coverImg}
+            initialPoint={editingCat.coverFocalPoint || { x: 50, y: 50 }}
+            onSave={(point: FocalPoint) => {
+              setEditingCat({ ...editingCat, coverFocalPoint: point });
+              setShowCoverFocalPicker(false);
+            }}
+            onClose={() => setShowCoverFocalPicker(false)}
+          />
+        );
+      })()}
+
       {/* Edit Modal */}
       {editingCat && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center animate-fadeIn">
@@ -501,6 +522,22 @@ export default function AdminDashboard() {
                     Set
                   </button>
                 </div>
+
+                {(() => {
+                  const hasCover = editingCat.coverUrl || editingCat.coverImageId;
+                  if (!hasCover) return null;
+                  const fp = editingCat.coverFocalPoint || { x: 50, y: 50 };
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => setShowCoverFocalPicker(true)}
+                      className="mt-1.5 text-xs text-blue-500 hover:text-blue-600 flex items-center gap-1"
+                    >
+                      Focal point: {fp.x}%, {fp.y}%
+                      <span className="text-[10px] text-neutral-400">(click to change)</span>
+                    </button>
+                  );
+                })()}
 
                 {(() => {
                   const catImages = portfolio.images.filter(

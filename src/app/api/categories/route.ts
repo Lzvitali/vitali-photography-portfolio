@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
       order: data.categories.length,
       coverImageId: null,
       coverUrl: null,
+      coverFocalPoint: { x: 50, y: 50 },
       coverCrop: { x: 0, y: 0, width: 100, height: 100 },
       cardLayout: "landscape",
     };

@@ -7,6 +7,10 @@
       "order": 0,
       "coverImageId": "img-fb40d2b0",
       "coverUrl": null,
+      "coverFocalPoint": {
+        "x": 53,
+        "y": 63
+      },
       "coverCrop": {
         "x": 0,
         "y": 0,
@@ -22,6 +26,10 @@
       "order": 1,
       "coverImageId": "img-7a8d9356",
       "coverUrl": null,
+      "coverFocalPoint": {
+        "x": 50,
+        "y": 50
+      },
       "coverCrop": {
         "x": 0,
         "y": 0,
@@ -37,6 +45,10 @@
       "order": 5,
       "coverImageId": "img-393cc684",
       "coverUrl": null,
+      "coverFocalPoint": {
+        "x": 50,
+        "y": 50
+      },
       "coverCrop": {
         "x": 0,
         "y": 0,
@@ -52,6 +64,10 @@
       "order": 6,
       "coverImageId": "img-0d3fc84f",
       "coverUrl": null,
+      "coverFocalPoint": {
+        "x": 50,
+        "y": 29
+      },
       "coverCrop": {
         "x": 0,
         "y": 0,
@@ -67,6 +83,10 @@
       "order": 3,
       "coverImageId": null,
       "coverUrl": "https://res.cloudinary.com/drtzu6ywv/image/upload/v1773510607/portfolio/orly0k2r4az5ky67g2ll.jpg",
+      "coverFocalPoint": {
+        "x": 50,
+        "y": 50
+      },
       "coverCrop": {
         "x": 0,
         "y": 0,
@@ -81,7 +101,11 @@
       "slug": "portraits",
       "order": 2,
       "coverImageId": null,
-      "coverUrl": "https://res.cloudinary.com/drtzu6ywv/image/upload/v1773508513/portfolio/d78y3zkvuostbosmwmlx.jpg",
+      "coverUrl": "https://res.cloudinary.com/drtzu6ywv/image/upload/v1773513779/portfolio/kk2mfhydjogtva5gs3rn.jpg",
+      "coverFocalPoint": {
+        "x": 50,
+        "y": 50
+      },
       "coverCrop": {
         "x": 0,
         "y": 0,
