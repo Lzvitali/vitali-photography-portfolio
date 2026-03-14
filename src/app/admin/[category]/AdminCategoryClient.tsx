@@ -2,12 +2,13 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Link2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import type { PortfolioData, PortfolioImage, FocalPoint } from "@/lib/types";
 import ImageUploader from "@/components/admin/ImageUploader";
 import SortableGallery from "@/components/admin/SortableGallery";
 import FocalPointPicker from "@/components/admin/FocalPointPicker";
+import CloudinaryPicker from "@/components/admin/CloudinaryPicker";
 
 interface AdminCategoryClientProps {
   slug: string;
@@ -19,6 +20,7 @@ export default function AdminCategoryClient({ slug }: AdminCategoryClientProps) 
   const [message, setMessage] = useState("");
   const [focalPointImage, setFocalPointImage] =
     useState<PortfolioImage | null>(null);
+  const [showCloudinaryPicker, setShowCloudinaryPicker] = useState(false);
 
   useEffect(() => {
     fetch("/api/data")
@@ -56,60 +58,97 @@ export default function AdminCategoryClient({ slug }: AdminCategoryClientProps) 
     width: number;
     height: number;
   }) {
-    if (!portfolio || !category) return;
-    const newImage: PortfolioImage = {
-      id: `img-${uuidv4().slice(0, 8)}`,
-      url: result.url,
-      public_id: result.public_id,
-      title: "",
-      categoryId: category.id,
-      width: result.width,
-      height: result.height,
-      order: images.length,
-      focalPoint: { x: 50, y: 50 },
-    };
-
-    const updated = {
-      ...portfolio,
-      images: [...portfolio.images, newImage],
-    };
-    setPortfolio(updated);
-  }
-
-  function handleReorder(reordered: PortfolioImage[]) {
-    if (!portfolio || !category) return;
-    const otherImages = portfolio.images.filter(
-      (img) => img.categoryId !== category.id
-    );
-    setPortfolio({
-      ...portfolio,
-      images: [...otherImages, ...reordered],
+    setPortfolio((prev) => {
+      if (!prev) return prev;
+      const cat = prev.categories.find((c) => c.slug === slug);
+      if (!cat) return prev;
+      const currentCount = prev.images.filter((img) => img.categoryId === cat.id).length;
+      const newImage: PortfolioImage = {
+        id: `img-${uuidv4().slice(0, 8)}`,
+        url: result.url,
+        public_id: result.public_id,
+        title: "",
+        categoryId: cat.id,
+        width: result.width,
+        height: result.height,
+        order: currentCount,
+        focalPoint: { x: 50, y: 50 },
+      };
+      return { ...prev, images: [...prev.images, newImage] };
     });
   }
 
-  function handleDelete(imageId: string) {
-    if (!portfolio || !category) return;
-    if (!confirm("Delete this image?")) return;
-
-    const updated = {
-      ...portfolio,
-      images: portfolio.images.filter((img) => img.id !== imageId),
-      categories: portfolio.categories.map((c) =>
-        c.coverImageId === imageId ? { ...c, coverImageId: null } : c
-      ),
-    };
-    setPortfolio(updated);
-  }
-
-  function handleSetCover(imageId: string) {
-    if (!portfolio || !category) return;
-    setPortfolio({
-      ...portfolio,
-      categories: portfolio.categories.map((c) =>
-        c.id === category.id ? { ...c, coverImageId: imageId } : c
-      ),
+  function handleCloudinaryImport(
+    images: { secure_url: string; public_id: string; width: number; height: number }[]
+  ) {
+    setPortfolio((prev) => {
+      if (!prev) return prev;
+      const cat = prev.categories.find((c) => c.slug === slug);
+      if (!cat) return prev;
+      let currentCount = prev.images.filter((img) => img.categoryId === cat.id).length;
+      const newImages: PortfolioImage[] = images.map((img) => ({
+        id: `img-${uuidv4().slice(0, 8)}`,
+        url: img.secure_url,
+        public_id: img.public_id,
+        title: "",
+        categoryId: cat.id,
+        width: img.width,
+        height: img.height,
+        order: currentCount++,
+        focalPoint: { x: 50, y: 50 },
+      }));
+      return { ...prev, images: [...prev.images, ...newImages] };
     });
   }
+
+  const handleReorder = useCallback(
+    (reordered: PortfolioImage[]) => {
+      setPortfolio((prev) => {
+        if (!prev) return prev;
+        const cat = prev.categories.find((c) => c.slug === slug);
+        if (!cat) return prev;
+        const otherImages = prev.images.filter(
+          (img) => img.categoryId !== cat.id
+        );
+        return { ...prev, images: [...otherImages, ...reordered] };
+      });
+    },
+    [slug]
+  );
+
+  const handleDelete = useCallback(
+    (imageId: string) => {
+      if (!confirm("Delete this image?")) return;
+      setPortfolio((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          images: prev.images.filter((img) => img.id !== imageId),
+          categories: prev.categories.map((c) =>
+            c.coverImageId === imageId ? { ...c, coverImageId: null } : c
+          ),
+        };
+      });
+    },
+    []
+  );
+
+  const handleSetCover = useCallback(
+    (imageId: string) => {
+      setPortfolio((prev) => {
+        if (!prev) return prev;
+        const cat = prev.categories.find((c) => c.slug === slug);
+        if (!cat) return prev;
+        return {
+          ...prev,
+          categories: prev.categories.map((c) =>
+            c.id === cat.id ? { ...c, coverImageId: imageId } : c
+          ),
+        };
+      });
+    },
+    [slug]
+  );
 
   function handleFocalPointSave(point: FocalPoint) {
     if (!portfolio || !focalPointImage) return;
@@ -177,9 +216,23 @@ export default function AdminCategoryClient({ slug }: AdminCategoryClientProps) 
         </div>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-6 space-y-3">
         <ImageUploader onUpload={handleUpload} />
+        <button
+          onClick={() => setShowCloudinaryPicker(true)}
+          className="w-full flex items-center justify-center gap-2 py-2.5 border border-dashed border-blue-300 dark:border-blue-700 rounded-lg text-sm text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+        >
+          <Link2 size={16} />
+          Import from URL
+        </button>
       </div>
+
+      {showCloudinaryPicker && (
+        <CloudinaryPicker
+          onImport={handleCloudinaryImport}
+          onClose={() => setShowCloudinaryPicker(false)}
+        />
+      )}
 
       {images.length > 0 ? (
         <SortableGallery

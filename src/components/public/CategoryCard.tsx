@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { Category, PortfolioImage } from "@/lib/types";
-import { optimizedUrl } from "@/lib/image-url";
+import { thumbnailUrl } from "@/lib/image-url";
 
 interface CategoryCardProps {
   category: Category;
@@ -38,7 +38,11 @@ export default function CategoryCard({
     return () => observer.disconnect();
   }, []);
 
-  const coverUrl = coverImage ? optimizedUrl(coverImage.url) : "";
+  const coverSrc = category.coverUrl
+    ? thumbnailUrl(category.coverUrl)
+    : coverImage
+      ? thumbnailUrl(coverImage.url)
+      : "";
   const focalX = coverImage?.focalPoint?.x ?? 50;
   const focalY = coverImage?.focalPoint?.y ?? 50;
 
@@ -50,9 +54,9 @@ export default function CategoryCard({
         visible ? "animate-fadeUp" : "opacity-0"
       }`}
     >
-      {coverUrl ? (
+      {coverSrc ? (
         <img
-          src={coverUrl}
+          src={coverSrc}
           alt={category.name}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           style={{ objectPosition: `${focalX}% ${focalY}%` }}
@@ -71,10 +75,10 @@ export default function CategoryCard({
 
       {/* Content */}
       <div className="absolute inset-x-0 bottom-0 p-5 md:p-7">
-        <h3 className="font-display text-xl md:text-2xl font-light text-white tracking-wide">
+        <h3 className="font-display text-3xl md:text-4xl font-light text-white tracking-wide drop-shadow-lg">
           {category.name}
         </h3>
-        <span className="text-[0.65rem] tracking-[0.15em] uppercase text-white/70 mt-1 block">
+        <span className="text-xs tracking-[0.15em] uppercase text-white/80 mt-1.5 block drop-shadow-md">
           {imageCount} {imageCount === 1 ? "photo" : "photos"}
         </span>
       </div>

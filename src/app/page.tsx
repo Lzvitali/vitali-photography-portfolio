@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="px-5 md:px-8 pt-20 md:pt-28 pb-10 md:pb-14 text-center animate-fadeUp">
+      <section className="px-5 md:px-8 pt-4 md:pt-6 pb-6 md:pb-8 text-center animate-fadeUp">
         <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-wide leading-tight">
           {site.name}
         </h1>
@@ -47,7 +47,7 @@ export default function Home() {
 
       {/* Category Cards */}
       <section className="px-4 md:px-8 pb-8 md:pb-12">
-        <h2 className="font-display text-xs tracking-[0.2em] uppercase text-neutral-400 dark:text-neutral-500 font-normal mb-6 md:mb-8 text-center">
+        <h2 className="font-display text-sm md:text-base tracking-[0.2em] uppercase text-neutral-400 dark:text-neutral-400 font-normal mb-6 md:mb-8 text-center">
           Explore Collections
         </h2>
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3 stagger-children">

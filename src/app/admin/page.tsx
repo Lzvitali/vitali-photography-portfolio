@@ -9,6 +9,9 @@ import {
   Save,
   GripVertical,
   Settings,
+  Upload,
+  Loader2,
+  X,
 } from "lucide-react";
 import type { PortfolioData, Category, SiteData, CardLayout } from "@/lib/types";
 import { CARD_LAYOUT_OPTIONS } from "@/lib/types";
@@ -22,6 +25,8 @@ export default function AdminDashboard() {
   const [editingCat, setEditingCat] = useState<Category | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [coverUploading, setCoverUploading] = useState(false);
+  const [coverUrlInput, setCoverUrlInput] = useState("");
 
   useEffect(() => {
     loadData();
@@ -210,6 +215,17 @@ export default function AdminDashboard() {
           const coverImage = portfolio.images.find(
             (img) => img.id === cat.coverImageId
           );
+          const displayCoverUrl = cat.coverUrl
+            ? cat.coverUrl.replace(
+                "/upload/",
+                "/upload/c_fill,w_600,h_340,f_auto,q_auto/"
+              )
+            : coverImage
+              ? coverImage.url.replace(
+                  "/upload/",
+                  "/upload/c_fill,w_600,h_340,f_auto,q_auto/"
+                )
+              : null;
 
           return (
             <div
@@ -218,15 +234,19 @@ export default function AdminDashboard() {
             >
               <Link href={`/admin/${cat.slug}`} className="block">
                 <div className="aspect-video bg-neutral-100 dark:bg-neutral-800 relative">
-                  {coverImage ? (
+                  {displayCoverUrl ? (
                     <img
-                      src={coverImage.url}
+                      src={displayCoverUrl}
                       alt={cat.name}
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-neutral-400 text-xs">
-                      No cover image
+                    <div className="w-full h-full flex flex-col items-center justify-center text-neutral-400 text-xs gap-1">
+                      <span>No cover image</span>
+                      <span className="text-[10px] text-neutral-300 dark:text-neutral-600">
+                        Click edit to set one
+                      </span>
                     </div>
                   )}
                 </div>
@@ -377,6 +397,160 @@ export default function AdminDashboard() {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <label className="text-xs text-neutral-500 block mb-1">
+                  Cover Image
+                </label>
+
+                {editingCat.coverUrl && (
+                  <div className="mb-2 relative inline-block">
+                    <img
+                      src={editingCat.coverUrl.replace(
+                        "/upload/",
+                        "/upload/c_fill,w_200,h_120,f_auto,q_auto/"
+                      )}
+                      alt="Custom cover"
+                      className="rounded border border-blue-500 ring-2 ring-blue-500/30 h-16 object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEditingCat({ ...editingCat, coverUrl: null })
+                      }
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center"
+                    >
+                      <X size={10} />
+                    </button>
+                    <span className="block text-[10px] text-blue-500 mt-0.5">
+                      Custom cover
+                    </span>
+                  </div>
+                )}
+
+                <label
+                  className={`flex items-center justify-center gap-1.5 py-2 border border-dashed border-neutral-300 dark:border-neutral-700 rounded-md text-xs text-neutral-500 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer ${
+                    coverUploading ? "opacity-50 pointer-events-none" : ""
+                  }`}
+                >
+                  {coverUploading ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <Upload size={14} />
+                  )}
+                  {coverUploading
+                    ? "Uploading..."
+                    : "Upload custom cover image"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={coverUploading}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setCoverUploading(true);
+                      try {
+                        const formData = new FormData();
+                        formData.append("file", file);
+                        const res = await fetch("/api/upload", {
+                          method: "POST",
+                          body: formData,
+                        });
+                        const result = await res.json();
+                        if (result.error) throw new Error(result.error);
+                        setEditingCat({
+                          ...editingCat,
+                          coverUrl: result.url,
+                          coverImageId: null,
+                        });
+                      } catch (err) {
+                        setMessage(
+                          err instanceof Error
+                            ? err.message
+                            : "Upload failed"
+                        );
+                      }
+                      setCoverUploading(false);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+
+                <div className="flex gap-1.5 mt-2">
+                  <input
+                    type="text"
+                    value={coverUrlInput}
+                    onChange={(e) => setCoverUrlInput(e.target.value)}
+                    placeholder="Or paste image URL"
+                    className="flex-1 px-2.5 py-1.5 border border-neutral-300 dark:border-neutral-700 rounded-md bg-transparent text-xs"
+                  />
+                  <button
+                    type="button"
+                    disabled={!coverUrlInput.trim().startsWith("http")}
+                    onClick={() => {
+                      setEditingCat({
+                        ...editingCat,
+                        coverUrl: coverUrlInput.trim(),
+                        coverImageId: null,
+                      });
+                      setCoverUrlInput("");
+                    }}
+                    className="px-2.5 py-1.5 text-xs bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-md disabled:opacity-40"
+                  >
+                    Set
+                  </button>
+                </div>
+
+                {(() => {
+                  const catImages = portfolio.images.filter(
+                    (img) => img.categoryId === editingCat.id
+                  );
+                  if (catImages.length === 0) return null;
+                  return (
+                    <>
+                      <p className="text-[10px] text-neutral-400 mt-2 mb-1">
+                        Or pick from gallery:
+                      </p>
+                      <div className="grid grid-cols-5 gap-1.5 max-h-32 overflow-y-auto">
+                        {catImages.map((img) => {
+                          const isSelected =
+                            !editingCat.coverUrl &&
+                            editingCat.coverImageId === img.id;
+                          const thumb = img.url.replace(
+                            "/upload/",
+                            "/upload/c_fill,w_120,h_120,f_auto,q_auto/"
+                          );
+                          return (
+                            <button
+                              key={img.id}
+                              type="button"
+                              onClick={() =>
+                                setEditingCat({
+                                  ...editingCat,
+                                  coverImageId: img.id,
+                                  coverUrl: null,
+                                })
+                              }
+                              className={`aspect-square rounded overflow-hidden border-2 transition-all ${
+                                isSelected
+                                  ? "border-blue-500 ring-2 ring-blue-500/30"
+                                  : "border-transparent hover:border-neutral-300 dark:hover:border-neutral-600"
+                              }`}
+                            >
+                              <img
+                                src={thumb}
+                                alt=""
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                              />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-5">

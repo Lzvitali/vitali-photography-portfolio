@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { optimizedUrl } from "@/lib/image-url";
+import { fullUrl } from "@/lib/image-url";
 
 interface LightboxProps {
   images: { url: string; title: string }[];
@@ -82,7 +82,7 @@ export default function Lightbox({
       )}
 
       <img
-        src={optimizedUrl(current.url)}
+        src={fullUrl(current.url)}
         alt={current.title || "Photo"}
         className="max-w-[90vw] max-h-[90vh] object-contain rounded-sm"
         onClick={(e) => e.stopPropagation()}

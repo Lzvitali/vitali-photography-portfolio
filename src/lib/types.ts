@@ -38,6 +38,7 @@ export interface Category {
   slug: string;
   order: number;
   coverImageId: string | null;
+  coverUrl: string | null;
   coverCrop: CoverCrop;
   cardLayout: CardLayout;
 }

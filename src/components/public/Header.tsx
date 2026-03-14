@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Aperture } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import type { Category } from "@/lib/types";
 
@@ -32,16 +32,17 @@ export default function Header({ siteName, categories }: HeaderProps) {
   const sortedCategories = [...categories].sort((a, b) => a.order - b.order);
 
   const navLinkClass =
-    "text-xs tracking-[0.12em] uppercase text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors duration-300";
+    "text-xs tracking-[0.12em] uppercase text-neutral-500 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors duration-300";
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-[#161615]/90 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-700/50 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="font-display text-lg tracking-[0.08em] uppercase font-light"
+            className="font-display text-lg tracking-[0.08em] uppercase font-light flex items-center gap-2 text-neutral-900 dark:text-neutral-100"
           >
+            <Aperture size={20} strokeWidth={1.5} />
             {siteName}
           </Link>
 

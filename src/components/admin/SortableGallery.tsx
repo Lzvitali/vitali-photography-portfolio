@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useCallback, useMemo } from "react";
 import {
   DndContext,
   closestCenter,
@@ -25,6 +26,10 @@ import {
 } from "lucide-react";
 import type { PortfolioImage } from "@/lib/types";
 
+function thumbUrl(url: string): string {
+  return url.replace("/upload/", "/upload/c_fill,w_300,h_300,f_auto,q_auto/");
+}
+
 interface SortableItemProps {
   image: PortfolioImage;
   isCover: boolean;
@@ -33,7 +38,7 @@ interface SortableItemProps {
   onSetCover: (id: string) => void;
 }
 
-function SortableItem({
+const SortableItem = React.memo(function SortableItem({
   image,
   isCover,
   onDelete,
@@ -52,7 +57,7 @@ function SortableItem({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 50 : "auto",
+    zIndex: isDragging ? 50 : ("auto" as const),
     opacity: isDragging ? 0.5 : 1,
   };
 
@@ -64,7 +69,7 @@ function SortableItem({
     >
       <div className="aspect-square relative">
         <img
-          src={image.url}
+          src={thumbUrl(image.url)}
           alt={image.title || "Photo"}
           className="w-full h-full object-cover"
           style={{
@@ -72,6 +77,8 @@ function SortableItem({
               image.focalPoint?.y ?? 50
             }%`,
           }}
+          loading="lazy"
+          decoding="async"
         />
         {isCover && (
           <div className="absolute top-1.5 left-1.5 bg-amber-500 text-white text-[10px] px-1.5 py-0.5 rounded font-medium flex items-center gap-0.5">
@@ -116,7 +123,7 @@ function SortableItem({
       </div>
     </div>
   );
-}
+});
 
 interface SortableGalleryProps {
   images: PortfolioImage[];
@@ -136,23 +143,28 @@ export default function SortableGallery({
   onSetCover,
 }: SortableGalleryProps) {
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      const oldIndex = images.findIndex((i) => i.id === active.id);
-      const newIndex = images.findIndex((i) => i.id === over.id);
-      const reordered = arrayMove(images, oldIndex, newIndex).map(
-        (img, idx) => ({ ...img, order: idx })
-      );
-      onReorder(reordered);
-    }
-  }
+  const itemIds = useMemo(() => images.map((i) => i.id), [images]);
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (over && active.id !== over.id) {
+        const oldIndex = images.findIndex((i) => i.id === active.id);
+        const newIndex = images.findIndex((i) => i.id === over.id);
+        const reordered = arrayMove(images, oldIndex, newIndex).map(
+          (img, idx) => ({ ...img, order: idx })
+        );
+        onReorder(reordered);
+      }
+    },
+    [images, onReorder]
+  );
 
   return (
     <DndContext
@@ -160,10 +172,7 @@ export default function SortableGallery({
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext
-        items={images.map((i) => i.id)}
-        strategy={rectSortingStrategy}
-      >
+      <SortableContext items={itemIds} strategy={rectSortingStrategy}>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
           {images.map((img) => (
             <SortableItem

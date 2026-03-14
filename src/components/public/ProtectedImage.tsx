@@ -1,6 +1,6 @@
 "use client";
 
-import { optimizedUrl } from "@/lib/image-url";
+import { thumbnailUrl } from "@/lib/image-url";
 
 interface ProtectedImageProps {
   src: string;
@@ -32,7 +32,7 @@ export default function ProtectedImage({
     >
       <div className="absolute inset-0 z-10" />
       <img
-        src={optimizedUrl(src)}
+        src={thumbnailUrl(src)}
         alt={alt}
         className={`block transition-transform duration-600 ease-out group-hover:scale-[1.03] ${
           fill ? "w-full h-full object-cover" : "w-full h-auto"

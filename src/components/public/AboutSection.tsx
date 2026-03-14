@@ -1,4 +1,4 @@
-import { optimizedUrl } from "@/lib/image-url";
+import { thumbnailUrl } from "@/lib/image-url";
 
 interface AboutSectionProps {
   about: string;
@@ -11,7 +11,7 @@ export default function AboutSection({
   portraitUrl,
   name,
 }: AboutSectionProps) {
-  const imgUrl = portraitUrl ? optimizedUrl(portraitUrl) : "";
+  const imgUrl = portraitUrl ? thumbnailUrl(portraitUrl, 400) : "";
 
   return (
     <section
@@ -22,7 +22,7 @@ export default function AboutSection({
         <img
           src={imgUrl}
           alt={name}
-          className="w-40 h-52 md:w-52 md:h-68 object-cover rounded-sm flex-shrink-0"
+          className="w-20 h-26 md:w-26 md:h-34 object-cover rounded-sm flex-shrink-0"
           loading="lazy"
         />
       )}
