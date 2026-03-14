@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPortfolioData, writePortfolioData } from "@/lib/data";
 import type { Category } from "@/lib/types";
-import { v4 as uuidv4 } from "uuid";
+
+export const dynamic = "force-static";
+
+export async function GET() {
+  return NextResponse.json({ error: "Not allowed" }, { status: 403 });
+}
 
 export async function POST(request: NextRequest) {
   if (process.env.NODE_ENV !== "development") {
@@ -9,6 +13,8 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const { getPortfolioData, writePortfolioData } = await import("@/lib/data");
+    const { v4: uuidv4 } = await import("uuid");
     const { name, slug } = await request.json();
     const data = getPortfolioData();
 
@@ -38,6 +44,7 @@ export async function PUT(request: NextRequest) {
   }
 
   try {
+    const { getPortfolioData, writePortfolioData } = await import("@/lib/data");
     const category = (await request.json()) as Category;
     const data = getPortfolioData();
 
@@ -62,6 +69,7 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
+    const { getPortfolioData, writePortfolioData } = await import("@/lib/data");
     const { id } = await request.json();
     const data = getPortfolioData();
 

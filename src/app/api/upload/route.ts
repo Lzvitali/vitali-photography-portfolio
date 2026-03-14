@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary";
 
-// Corporate proxy SSL workaround (dev only)
-if (process.env.NODE_ENV === "development") {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+export const dynamic = "force-static";
+
+export async function GET() {
+  return NextResponse.json({ error: "Not allowed" }, { status: 403 });
 }
 
 export async function POST(request: NextRequest) {
@@ -12,6 +12,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    const cloudinary = (await import("@/lib/cloudinary")).default;
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
