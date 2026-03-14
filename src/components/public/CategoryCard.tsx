@@ -3,15 +3,8 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import type { Category, PortfolioImage } from "@/lib/types";
+import type { CategoryCardProps } from "@/lib/types";
 import { thumbnailUrl } from "@/lib/image-url";
-
-interface CategoryCardProps {
-  category: Category;
-  coverImage: PortfolioImage | null;
-  imageCount: number;
-  className?: string;
-}
 
 export default function CategoryCard({
   category,

@@ -13,8 +13,8 @@ import {
   Loader2,
   X,
 } from "lucide-react";
-import type { PortfolioData, Category, SiteData, CardLayout, FocalPoint } from "@/lib/types";
-import { CARD_LAYOUT_OPTIONS } from "@/lib/types";
+import type { PortfolioData, Category, SiteData, CardLayout, CardStyle, FocalPoint } from "@/lib/types";
+import { CARD_LAYOUT_OPTIONS, CARD_STYLE_OPTIONS } from "@/lib/types";
 import { slugify } from "@/lib/utils";
 import FocalPointPicker from "@/components/admin/FocalPointPicker";
 
@@ -193,6 +193,20 @@ export default function AdminDashboard() {
               rows={3}
               className="w-full px-3 py-1.5 text-sm border border-neutral-300 dark:border-neutral-700 rounded bg-white dark:bg-neutral-800 resize-none"
             />
+          </div>
+          <div>
+            <label className="text-xs text-neutral-500 block mb-1">Card Style</label>
+            <select
+              value={site.cardStyle || "default"}
+              onChange={(e) => setSite({ ...site, cardStyle: e.target.value as CardStyle })}
+              className="w-full px-3 py-1.5 text-sm border border-neutral-300 dark:border-neutral-700 rounded bg-white dark:bg-neutral-800"
+            >
+              {CARD_STYLE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>

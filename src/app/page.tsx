@@ -1,6 +1,6 @@
 import { getPortfolioData, getSiteData } from "@/lib/data";
-import CategoryCard from "@/components/public/CategoryCard";
 import AboutSection from "@/components/public/AboutSection";
+import { getCardComponent, getGridGap } from "@/components/public/cards";
 import type { CardLayout, PortfolioImage } from "@/lib/types";
 
 function getAspectClass(layout: CardLayout, coverImage: PortfolioImage | null): string {
@@ -33,6 +33,11 @@ export default function Home() {
     (a, b) => a.order - b.order
   );
 
+  const cardStyle = site.cardStyle || "default";
+  const CardComponent = getCardComponent(cardStyle);
+  const gridGap = getGridGap(cardStyle);
+  const useAspectClass = cardStyle === "default";
+
   return (
     <>
       {/* Hero */}
@@ -50,7 +55,7 @@ export default function Home() {
         <h2 className="font-display text-sm md:text-base tracking-[0.2em] uppercase text-neutral-400 dark:text-neutral-400 font-normal mb-6 md:mb-8 text-center">
           Explore Collections
         </h2>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3 stagger-children">
+        <div className={`max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${gridGap} stagger-children`}>
           {sortedCategories.map((cat) => {
             const coverImage =
               portfolio.images.find((img) => img.id === cat.coverImageId) ||
@@ -58,10 +63,12 @@ export default function Home() {
             const imageCount = portfolio.images.filter(
               (img) => img.categoryId === cat.id
             ).length;
-            const aspectClass = getAspectClass(cat.cardLayout || "landscape", coverImage);
+            const aspectClass = useAspectClass
+              ? getAspectClass(cat.cardLayout || "landscape", coverImage)
+              : "";
 
             return (
-              <CategoryCard
+              <CardComponent
                 key={cat.id}
                 category={cat}
                 coverImage={coverImage}

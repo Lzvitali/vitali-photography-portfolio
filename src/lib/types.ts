@@ -49,6 +49,25 @@ export interface PortfolioData {
   images: PortfolioImage[];
 }
 
+export type CardStyle = "default" | "stack" | "album" | "polaroid" | "reveal" | "folder" | "film";
+
+export const CARD_STYLE_OPTIONS: { value: CardStyle; label: string }[] = [
+  { value: "default", label: "Default (overlay)" },
+  { value: "stack", label: "Photo Stack" },
+  { value: "album", label: "Album Book" },
+  { value: "polaroid", label: "Polaroid" },
+  { value: "reveal", label: "Minimal Reveal" },
+  { value: "folder", label: "Folder Tab" },
+  { value: "film", label: "Film Strip" },
+];
+
+export interface CategoryCardProps {
+  category: Category;
+  coverImage: PortfolioImage | null;
+  imageCount: number;
+  className?: string;
+}
+
 export interface SiteContact {
   email: string;
   phone: string;
@@ -61,5 +80,6 @@ export interface SiteData {
   tagline: string;
   about: string;
   portraitUrl: string;
+  cardStyle: CardStyle;
   contact: SiteContact;
 }
