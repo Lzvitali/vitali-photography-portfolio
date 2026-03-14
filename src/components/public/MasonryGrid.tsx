@@ -7,6 +7,12 @@ import type { PortfolioImage } from "@/lib/types";
 
 const GAP = 4;
 
+function snapRatio(r: number): number {
+  if (r < 0.9) return 0.67;
+  if (r < 1.1) return 1.0;
+  return 1.5;
+}
+
 interface Row {
   images: PortfolioImage[];
   indices: number[];
@@ -21,14 +27,17 @@ function computeRows(
 ): Row[] {
   if (containerWidth <= 0 || images.length === 0) return [];
 
+  const minPerRow = containerWidth < 640 ? 2 : 3;
   const rows: Row[] = [];
   let currentRow: PortfolioImage[] = [];
   let currentIndices: number[] = [];
   let ratioSum = 0;
 
+  const remaining = () => images.length - (currentIndices.length > 0 ? currentIndices[currentIndices.length - 1] + 1 : 0);
+
   for (let i = 0; i < images.length; i++) {
     const img = images[i];
-    const ratio = (img.width || 4) / (img.height || 3);
+    const ratio = snapRatio((img.width || 4) / (img.height || 3));
 
     const prevGaps = Math.max(0, currentRow.length - 1) * GAP;
     const heightBefore = ratioSum > 0 ? (containerWidth - prevGaps) / ratioSum : Infinity;
@@ -40,11 +49,15 @@ function computeRows(
     const gaps = (currentRow.length - 1) * GAP;
     const heightAfter = (containerWidth - gaps) / ratioSum;
 
-    if (heightAfter <= targetHeight && currentRow.length > 1) {
+    const left = images.length - i - 1;
+    const canBreak = currentRow.length >= minPerRow || left === 0;
+
+    if (heightAfter <= targetHeight && canBreak) {
       const diffBefore = Math.abs(heightBefore - targetHeight);
       const diffAfter = Math.abs(heightAfter - targetHeight);
+      const canBreakBefore = currentRow.length > minPerRow && left > 0;
 
-      if (diffBefore < diffAfter && currentRow.length > 2) {
+      if (diffBefore < diffAfter && canBreakBefore) {
         currentRow.pop();
         currentIndices.pop();
         ratioSum -= ratio;
@@ -78,11 +91,13 @@ function computeRows(
   if (currentRow.length > 0) {
     const gaps = (currentRow.length - 1) * GAP;
     const naturalHeight = (containerWidth - gaps) / ratioSum;
+    const prevHeight = rows.length > 0 ? rows[rows.length - 1].height : targetHeight;
+    const lastHeight = naturalHeight > targetHeight * 1.3 ? prevHeight : naturalHeight;
     rows.push({
       images: currentRow,
       indices: currentIndices,
-      height: Math.min(naturalHeight, targetHeight),
-      isLast: true,
+      height: lastHeight,
+      isLast: naturalHeight > targetHeight * 1.3,
     });
   }
 
@@ -172,9 +187,9 @@ export default function MasonryGrid({ images }: MasonryGridProps) {
           >
             {row.images.map((img, imgIdx) => {
               const globalIdx = row.indices[imgIdx];
-              const ratio = (img.width || 4) / (img.height || 3);
+              const layoutRatio = snapRatio((img.width || 4) / (img.height || 3));
               const imgWidth = row.isLast
-                ? ratio * row.height
+                ? layoutRatio * row.height
                 : undefined;
 
               return (
@@ -188,7 +203,7 @@ export default function MasonryGrid({ images }: MasonryGridProps) {
                       : "opacity-0 scale-[0.97]"
                   }`}
                   style={{
-                    flex: row.isLast ? "none" : `${ratio} 1 0%`,
+                    flex: row.isLast ? "none" : `${layoutRatio} 1 0%`,
                     width: imgWidth,
                     height: row.height,
                     transitionDelay: `${(imgIdx % 5) * 60}ms`,
@@ -199,7 +214,7 @@ export default function MasonryGrid({ images }: MasonryGridProps) {
                     alt={img.title || "Photo"}
                     focalX={img.focalPoint?.x}
                     focalY={img.focalPoint?.y}
-                    aspectRatio={ratio}
+                    aspectRatio={layoutRatio}
                     fill
                     onClick={() => setLightboxIndex(globalIdx)}
                   />
