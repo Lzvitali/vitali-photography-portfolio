@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState, useRef } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { fullUrl } from "@/lib/image-url";
+import { thumbnailUrl, lightboxUrl } from "@/lib/image-url";
 
 interface LightboxProps {
   images: { url: string; title: string }[];
@@ -17,10 +17,57 @@ export default function Lightbox({
   onClose,
   onNavigate,
 }: LightboxProps) {
+  const current = images[currentIndex];
+
+  const [displaySrc, setDisplaySrc] = useState(() =>
+    current ? thumbnailUrl(current.url) : ""
+  );
+  const [loaded, setLoaded] = useState(false);
+  const preloadedRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!current) return;
+
+    const thumb = thumbnailUrl(current.url);
+    const hiRes = lightboxUrl(current.url);
+
+    setDisplaySrc(thumb);
+    setLoaded(false);
+
+    const img = new Image();
+    img.src = hiRes;
+    img.onload = () => {
+      setDisplaySrc(hiRes);
+      setLoaded(true);
+    };
+
+    return () => {
+      img.onload = null;
+    };
+  }, [currentIndex, current]);
+
+  // Preload adjacent images after current finishes loading
+  useEffect(() => {
+    if (!loaded || images.length <= 1) return;
+
+    const toPreload = [
+      (currentIndex + 1) % images.length,
+      (currentIndex - 1 + images.length) % images.length,
+    ];
+
+    for (const idx of toPreload) {
+      const src = lightboxUrl(images[idx].url);
+      if (!preloadedRef.current.has(src)) {
+        preloadedRef.current.add(src);
+        const img = new Image();
+        img.src = src;
+      }
+    }
+  }, [loaded, currentIndex, images]);
+
   const navigate = useCallback(
     (dir: number) => {
-      const next =
-        (currentIndex + dir + images.length) % images.length;
+      const next = (currentIndex + dir + images.length) % images.length;
       onNavigate(next);
     },
     [currentIndex, images.length, onNavigate]
@@ -40,7 +87,6 @@ export default function Lightbox({
     };
   }, [onClose, navigate]);
 
-  const current = images[currentIndex];
   if (!current) return null;
 
   return (
@@ -82,9 +128,12 @@ export default function Lightbox({
       )}
 
       <img
-        src={fullUrl(current.url)}
+        key={currentIndex}
+        src={displaySrc}
         alt={current.title || "Photo"}
-        className="max-w-[90vw] max-h-[90vh] object-contain rounded-sm"
+        className={`max-w-[90vw] max-h-[90vh] object-contain rounded-sm transition-opacity duration-300 ${
+          loaded ? "opacity-100" : "opacity-90"
+        }`}
         onClick={(e) => e.stopPropagation()}
         onContextMenu={(e) => e.preventDefault()}
         draggable={false}

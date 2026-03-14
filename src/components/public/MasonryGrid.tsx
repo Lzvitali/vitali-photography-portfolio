@@ -94,7 +94,7 @@ export default function MasonryGrid({ images }: MasonryGridProps) {
     return () => ro.disconnect();
   }, []);
 
-  const targetHeight = containerWidth < 640 ? 200 : 300;
+  const targetHeight = containerWidth < 640 ? 260 : 380;
   const rows = useMemo(
     () => computeRows(sorted, containerWidth, targetHeight),
     [sorted, containerWidth, targetHeight]

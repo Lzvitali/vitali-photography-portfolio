@@ -11,6 +11,11 @@ export function thumbnailUrl(url: string, width = 800): string {
   return url.replace("/upload/", `/upload/w_${width},f_auto,q_auto:best/`);
 }
 
+export function lightboxUrl(url: string): string {
+  if (!url) return "";
+  return url.replace("/upload/", "/upload/w_1920,f_auto,q_auto:best/");
+}
+
 export function cloudinaryUrl(
   publicId: string,
   transforms: string = "f_auto,q_auto:best"
