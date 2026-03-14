@@ -21,7 +21,6 @@ function computeRows(
 ): Row[] {
   if (containerWidth <= 0 || images.length === 0) return [];
 
-  const maxHeight = targetHeight * 1.35;
   const rows: Row[] = [];
   let currentRow: PortfolioImage[] = [];
   let currentIndices: number[] = [];
@@ -30,24 +29,49 @@ function computeRows(
   for (let i = 0; i < images.length; i++) {
     const img = images[i];
     const ratio = (img.width || 4) / (img.height || 3);
+
+    const prevGaps = Math.max(0, currentRow.length - 1) * GAP;
+    const heightBefore = ratioSum > 0 ? (containerWidth - prevGaps) / ratioSum : Infinity;
+
     currentRow.push(img);
     currentIndices.push(i);
     ratioSum += ratio;
 
     const gaps = (currentRow.length - 1) * GAP;
-    const rowWidth = ratioSum * targetHeight + gaps;
+    const heightAfter = (containerWidth - gaps) / ratioSum;
 
-    if (rowWidth >= containerWidth && currentRow.length > 0) {
-      const actualHeight = Math.min((containerWidth - gaps) / ratioSum, maxHeight);
-      rows.push({
-        images: [...currentRow],
-        indices: [...currentIndices],
-        height: actualHeight,
-        isLast: false,
-      });
-      currentRow = [];
-      currentIndices = [];
-      ratioSum = 0;
+    if (heightAfter <= targetHeight && currentRow.length > 1) {
+      const diffBefore = Math.abs(heightBefore - targetHeight);
+      const diffAfter = Math.abs(heightAfter - targetHeight);
+
+      if (diffBefore < diffAfter && currentRow.length > 2) {
+        currentRow.pop();
+        currentIndices.pop();
+        ratioSum -= ratio;
+
+        const flushGaps = (currentRow.length - 1) * GAP;
+        const flushHeight = (containerWidth - flushGaps) / ratioSum;
+        rows.push({
+          images: [...currentRow],
+          indices: [...currentIndices],
+          height: flushHeight,
+          isLast: false,
+        });
+
+        currentRow = [img];
+        currentIndices = [i];
+        ratioSum = ratio;
+      } else {
+        rows.push({
+          images: [...currentRow],
+          indices: [...currentIndices],
+          height: heightAfter,
+          isLast: false,
+        });
+        currentRow = [];
+        currentIndices = [];
+        ratioSum = 0;
+      }
     }
   }
 
