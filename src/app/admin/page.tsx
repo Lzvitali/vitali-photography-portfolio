@@ -439,7 +439,7 @@ export default function AdminDashboard() {
                   type="text"
                   value={editingCat.name}
                   onChange={(e) =>
-                    setEditingCat({ ...editingCat, name: e.target.value })
+                    setEditingCat({ ...editingCat, name: e.target.value, slug: slugify(e.target.value) })
                   }
                   className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-md bg-transparent text-sm"
                 />
@@ -452,7 +452,7 @@ export default function AdminDashboard() {
                   type="text"
                   value={editingCat.slug}
                   onChange={(e) =>
-                    setEditingCat({ ...editingCat, slug: e.target.value })
+                    setEditingCat({ ...editingCat, slug: slugify(e.target.value) })
                   }
                   className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-md bg-transparent text-sm"
                 />
