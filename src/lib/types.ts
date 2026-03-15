@@ -49,6 +49,18 @@ export interface PortfolioData {
   images: PortfolioImage[];
 }
 
+export type PortraitStyle = "default" | "circle" | "rounded" | "polaroid" | "offset" | "centered" | "blob";
+
+export const PORTRAIT_STYLE_OPTIONS: { value: PortraitStyle; label: string }[] = [
+  { value: "default", label: "Default (small rect)" },
+  { value: "circle", label: "Circle with Ring" },
+  { value: "rounded", label: "Rounded Rectangle" },
+  { value: "polaroid", label: "Polaroid" },
+  { value: "offset", label: "Offset Border" },
+  { value: "centered", label: "Large Circle (centered)" },
+  { value: "blob", label: "Organic Blob" },
+];
+
 export type CardStyle = "default" | "stack" | "album" | "polaroid" | "reveal" | "folder" | "film";
 
 export const CARD_STYLE_OPTIONS: { value: CardStyle; label: string }[] = [
@@ -80,6 +92,8 @@ export interface SiteData {
   tagline: string;
   about: string;
   portraitUrl: string;
+  portraitStyle: PortraitStyle;
+  portraitFocalPoint: FocalPoint;
   cardStyle: CardStyle;
   contact: SiteContact;
 }

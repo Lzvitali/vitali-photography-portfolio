@@ -13,8 +13,8 @@ import {
   Loader2,
   X,
 } from "lucide-react";
-import type { PortfolioData, Category, SiteData, CardLayout, CardStyle, FocalPoint } from "@/lib/types";
-import { CARD_LAYOUT_OPTIONS, CARD_STYLE_OPTIONS } from "@/lib/types";
+import type { PortfolioData, Category, SiteData, CardLayout, CardStyle, PortraitStyle, FocalPoint } from "@/lib/types";
+import { CARD_LAYOUT_OPTIONS, CARD_STYLE_OPTIONS, PORTRAIT_STYLE_OPTIONS } from "@/lib/types";
 import { slugify } from "@/lib/utils";
 import FocalPointPicker from "@/components/admin/FocalPointPicker";
 
@@ -29,6 +29,7 @@ export default function AdminDashboard() {
   const [coverUploading, setCoverUploading] = useState(false);
   const [coverUrlInput, setCoverUrlInput] = useState("");
   const [showCoverFocalPicker, setShowCoverFocalPicker] = useState(false);
+  const [showPortraitFocalPicker, setShowPortraitFocalPicker] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -208,6 +209,53 @@ export default function AdminDashboard() {
               ))}
             </select>
           </div>
+
+          <div className="md:col-span-2 border-t border-neutral-200 dark:border-neutral-800 pt-3 mt-1">
+            <p className="text-xs font-medium text-neutral-500 mb-2">Portrait (About Section)</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-neutral-500 block mb-1">Portrait URL</label>
+                <input
+                  type="text"
+                  value={site.portraitUrl || ""}
+                  onChange={(e) => setSite({ ...site, portraitUrl: e.target.value })}
+                  placeholder="https://..."
+                  className="w-full px-3 py-1.5 text-sm border border-neutral-300 dark:border-neutral-700 rounded bg-white dark:bg-neutral-800"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-neutral-500 block mb-1">Portrait Style</label>
+                <select
+                  value={site.portraitStyle || "default"}
+                  onChange={(e) => setSite({ ...site, portraitStyle: e.target.value as PortraitStyle })}
+                  className="w-full px-3 py-1.5 text-sm border border-neutral-300 dark:border-neutral-700 rounded bg-white dark:bg-neutral-800"
+                >
+                  {PORTRAIT_STYLE_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {site.portraitUrl && (
+              <div className="flex items-center gap-3 mt-2">
+                <img
+                  src={site.portraitUrl.replace("/upload/", "/upload/c_fill,w_80,h_80,f_auto,q_auto/")}
+                  alt="Portrait preview"
+                  className="w-10 h-10 rounded-full object-cover border border-neutral-200 dark:border-neutral-700"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPortraitFocalPicker(true)}
+                  className="text-xs text-blue-500 hover:text-blue-600 flex items-center gap-1"
+                >
+                  Focal point: {(site.portraitFocalPoint || { x: 50, y: 50 }).x}%, {(site.portraitFocalPoint || { x: 50, y: 50 }).y}%
+                  <span className="text-[10px] text-neutral-400">(click to change)</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -343,6 +391,19 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Portrait Focal Point Picker */}
+      {showPortraitFocalPicker && site.portraitUrl && (
+        <FocalPointPicker
+          imageUrl={site.portraitUrl}
+          initialPoint={site.portraitFocalPoint || { x: 50, y: 50 }}
+          onSave={(point: FocalPoint) => {
+            setSite({ ...site, portraitFocalPoint: point });
+            setShowPortraitFocalPicker(false);
+          }}
+          onClose={() => setShowPortraitFocalPicker(false)}
+        />
       )}
 
       {/* Cover Focal Point Picker */}

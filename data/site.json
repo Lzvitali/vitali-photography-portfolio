@@ -1,8 +1,13 @@
 {
   "name": "Vitali Layzerman",
   "tagline": "Photographer",
-  "about": "Based in Ramat Gan, I capture the energy of live events, the quiet beauty of landscapes, and the unscripted moments of street life. Every frame is an invitation to see the world through a different lens.",
+  "about": "Based in Israel - Ramat Gan, I capture the energy of live events, the quiet beauty of landscapes, and the unscripted moments of street life. Every frame is an invitation to see the world through a different lens.",
   "portraitUrl": "https://res.cloudinary.com/drtzu6ywv/image/upload/v1773498748/portfolio/mxobgzghjonktg8fntuj.jpg",
+  "portraitStyle": "offset",
+  "portraitFocalPoint": {
+    "x": 50,
+    "y": 50
+  },
   "cardStyle": "album",
   "contact": {
     "email": "lzvitali68@gmail.com",

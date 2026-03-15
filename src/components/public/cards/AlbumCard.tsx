@@ -35,7 +35,7 @@ export default function AlbumCard({
         <div className="absolute left-0 top-0 bottom-0 w-[5px] bg-gradient-to-r from-black/15 via-black/05 to-transparent z-[2]" />
 
         {/* Cover image */}
-        <div className="aspect-[4/3] relative">
+        <div className="aspect-[5/4] relative">
           {coverSrc ? (
             <img
               src={coverSrc}

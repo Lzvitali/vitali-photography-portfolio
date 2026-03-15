@@ -85,6 +85,8 @@ export default function Home() {
         about={site.about}
         portraitUrl={site.portraitUrl}
         name={site.name}
+        portraitStyle={site.portraitStyle || "default"}
+        portraitFocalPoint={site.portraitFocalPoint || { x: 50, y: 50 }}
       />
     </>
   );

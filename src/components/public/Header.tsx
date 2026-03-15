@@ -113,7 +113,7 @@ export default function Header({ siteName, categories }: HeaderProps) {
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(true)}
-              className="p-1"
+              className="p-1 text-neutral-700 dark:text-neutral-300"
               aria-label="Open menu"
             >
               <Menu size={22} />
